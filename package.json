@@ -1,0 +1,23 @@
+{
+  "name": "soo-many-tokens",
+  "version": "1.0.0",
+  "description": "a token counter for you to track your tokens",
+  "homepage": "https://github.com/sehaj97/AI-Token-Counter#readme",
+  "bugs": {
+    "url": "https://github.com/sehaj97/AI-Token-Counter/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sehaj97/AI-Token-Counter.git"
+  },
+  "license": "MIT",
+  "author": "Sehajpreet Singh",
+  "type": "commonjs",
+  "main": "none",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@dqbd/tiktoken": "^1.0.22"
+  }
+}
