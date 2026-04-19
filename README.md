@@ -80,12 +80,7 @@ Prefer `data-*` attributes and semantic landmarks over class names.
 The tokenizer in `lib/tokenizer.js` uses a BPE pre-tokenization pass plus
 subword heuristics. Expected accuracy vs. `tiktoken cl100k_base`:
 
-| Content type      | Accuracy |
-|---|---|
-| English prose     | ~93–97%  |
-| Code (JS/Python)  | ~88–93%  |
-| Mixed/markdown    | ~90–95%  |
-| Numbers/symbols   | ~85–92%  |
+Accuracy in testing phase
 
 For an exact count you would need WASM tiktoken, which is ~500KB and requires
 a Content Security Policy exception on most AI sites — not worth the trade-off
