@@ -1,0 +1,379 @@
+/* styles.css — AI Token Tracker Overlay */
+
+/* ── Reset ──────────────────────────────────────────────────────────────────── */
+#att-overlay *,
+#att-overlay *::before,
+#att-overlay *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+}
+
+/* ── Overlay container ─────────────────────────────────────────────────────── */
+#att-overlay {
+  --att-accent: #10a37f;
+  --att-bg: rgba(10, 10, 16, 0.94);
+  --att-border: rgba(255, 255, 255, 0.08);
+  --att-text: #e8e8f0;
+  --att-muted: rgba(232, 232, 240, 0.42);
+  --att-input-bg: rgba(255, 255, 255, 0.05);
+  --att-warn: #f59e0b;
+  --att-danger: #ef4444;
+  --att-radius: 12px;
+
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 2147483647;
+  width: 250px;
+
+  background: var(--att-bg);
+  border: 1px solid var(--att-border);
+  border-radius: var(--att-radius);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+    0 8px 32px rgba(0, 0, 0, 0.55),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+
+  color: var(--att-text);
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 12px 14px 10px;
+  user-select: none;
+  transition: box-shadow 0.25s ease;
+}
+
+#att-overlay:hover {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+    0 12px 40px rgba(0, 0, 0, 0.6),
+    0 0 0 1px var(--att-accent) inset;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────────── */
+#att-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  cursor: grab;
+}
+#att-header:active {
+  cursor: grabbing;
+}
+
+#att-site-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--att-accent);
+}
+
+#att-settings-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--att-muted);
+  font-size: 25px;
+  padding: 0 2px;
+  line-height: 1;
+  transition:
+    color 0.2s,
+    transform 0.2s;
+  flex-shrink: 0;
+}
+#att-settings-btn:hover {
+  color: var(--att-text);
+  transform: rotate(30deg);
+}
+
+/* ── Token count ────────────────────────────────────────────────────────────── */
+#att-counts {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  margin-bottom: 9px;
+}
+#att-token-count {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  transition: color 0.3s;
+}
+#att-divider,
+#att-context-max {
+  font-size: 11px;
+  color: var(--att-muted);
+}
+
+/* ── Progress bar ───────────────────────────────────────────────────────────── */
+#att-bar-track {
+  position: relative;
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+#att-bar-fill {
+  position: absolute;
+  inset: 0;
+  width: 0%;
+  background: var(--att-accent);
+  border-radius: 99px;
+  transition:
+    width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.3s;
+}
+#att-bar-glow {
+  position: absolute;
+  inset: 0;
+  width: 0%;
+  background: var(--att-accent);
+  filter: blur(4px);
+  opacity: 0.5;
+  border-radius: 99px;
+  transition:
+    width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.3s;
+  pointer-events: none;
+}
+
+/* warn / danger colour states */
+#att-overlay.att-warn #att-bar-fill,
+#att-overlay.att-warn #att-bar-glow {
+  background: var(--att-warn);
+}
+#att-overlay.att-warn #att-site-label {
+  color: var(--att-warn);
+}
+
+#att-overlay.att-danger #att-bar-fill,
+#att-overlay.att-danger #att-bar-glow {
+  background: var(--att-danger);
+}
+#att-overlay.att-danger #att-site-label {
+  color: var(--att-danger);
+}
+#att-overlay.att-danger {
+  animation: att-pulse 2s ease-in-out infinite;
+}
+@keyframes att-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(239, 68, 68, 0.1);
+  }
+  50% {
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.5),
+      0 0 0 3px rgba(239, 68, 68, 0.25);
+  }
+}
+
+/* ── Meta row ───────────────────────────────────────────────────────────────── */
+#att-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--att-muted);
+}
+
+/* ── Settings panel ─────────────────────────────────────────────────────────── */
+#att-settings-panel {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--att-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-height: 480px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+#att-settings-panel[hidden] {
+  display: none;
+}
+
+/* Thin scrollbar for webkit */
+#att-settings-panel::-webkit-scrollbar {
+  width: 4px;
+}
+#att-settings-panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 99px;
+}
+
+/* ── Field groups ───────────────────────────────────────────────────────────── */
+.att-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px 0;
+}
+
+.att-field-group label {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--att-muted);
+  pointer-events: none;
+}
+
+.att-divider-line {
+  height: 1px;
+  background: var(--att-border);
+  margin: 0 -2px;
+}
+
+/* ── Inputs ──────────────────────────────────────────────────────────────────── */
+#att-settings-panel input[type="text"],
+#att-settings-panel input[type="number"],
+#att-settings-panel select {
+  width: 100%;
+  background: var(--att-input-bg);
+  border: 1px solid var(--att-border);
+  border-radius: 6px;
+  color: var(--att-text);
+  font-size: 11px;
+  font-family: inherit;
+  padding: 5px 8px;
+  outline: none;
+  transition: border-color 0.2s;
+  user-select: text;
+}
+
+#att-settings-panel input[type="text"]:focus,
+#att-settings-panel input[type="number"]:focus,
+#att-settings-panel select:focus {
+  border-color: var(--att-accent);
+}
+
+#att-settings-panel input::placeholder {
+  color: rgba(232, 232, 240, 0.25);
+}
+
+/* remove number spinners */
+#att-settings-panel input[type="number"]::-webkit-inner-spin-button,
+#att-settings-panel input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+#att-settings-panel input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────────── */
+.att-btn {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--att-border);
+  border-radius: 6px;
+  color: var(--att-muted);
+  font-size: 11px;
+  font-family: inherit;
+  padding: 5px 8px;
+  cursor: pointer;
+  text-align: center;
+  transition:
+    background 0.18s,
+    color 0.18s,
+    border-color 0.18s;
+  line-height: 1.4;
+}
+.att-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--att-text);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+/* accent = subtle highlight */
+.att-btn-accent {
+  border-color: rgba(255, 255, 255, 0.14);
+  color: var(--att-accent);
+}
+.att-btn-accent:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: var(--att-accent);
+}
+
+/* warn */
+.att-btn-warn {
+  color: var(--att-warn);
+  border-color: rgba(245, 158, 11, 0.2);
+}
+.att-btn-warn:hover {
+  background: rgba(245, 158, 11, 0.08);
+  border-color: var(--att-warn);
+}
+
+/* danger */
+.att-btn-danger {
+  color: var(--att-danger);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+.att-btn-danger:hover {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: var(--att-danger);
+}
+
+/* file restore button — label acts as button */
+label.att-btn {
+  cursor: pointer;
+}
+
+/* ── Toast notification ─────────────────────────────────────────────────────── */
+#att-toast {
+  font-size: 10px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--att-text);
+  margin-top: 4px;
+  animation: att-fadein 0.2s ease;
+}
+#att-toast[data-type="error"] {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--att-danger);
+}
+#att-toast[hidden] {
+  display: none;
+}
+
+@keyframes att-fadein {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Encoding badge ──────────────────────────────────────────────────────────── */
+#att-encoding-badge {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(232, 232, 240, 0.22);
+  text-align: right;
+  margin-top: 5px;
+  cursor: default;
+  transition: color 0.2s;
+  min-height: 11px;
+}
+#att-encoding-badge:not(:empty) {
+  color: rgba(232, 232, 240, 0.28);
+}
+#att-overlay:hover #att-encoding-badge {
+  color: rgba(232, 232, 240, 0.45);
+}

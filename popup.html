@@ -1,18 +1,188 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Token Tracker</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    body {
+      width: 280px;
+      background: #0d0d14;
+      color: #e8e8f0;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .header {
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .header h1 {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #e8e8f0;
+    }
+
+    .header p {
+      font-size: 10px;
+      color: rgba(232,232,240,0.4);
+      margin-top: 2px;
+    }
+
+    .section {
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .section-title {
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(232,232,240,0.35);
+      margin-bottom: 10px;
+    }
+
+    .site-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px 0;
+    }
+
+    .site-name {
+      font-size: 11px;
+      color: rgba(232,232,240,0.7);
+    }
+
+    .site-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      margin-right: 7px;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .site-row-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .toggle {
+      position: relative;
+      width: 30px;
+      height: 16px;
+    }
+
+    .toggle input { opacity: 0; width: 0; height: 0; }
+
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.1);
+      border-radius: 99px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .toggle input:checked + .toggle-track { background: var(--accent, #10a37f); }
+
+    .toggle-track::after {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      left: 2px;
+      top: 2px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+
+    .toggle input:checked + .toggle-track::after { transform: translateX(14px); }
+
+    .footer {
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-text {
+      font-size: 9px;
+      color: rgba(232,232,240,0.25);
+    }
+
+    a {
+      color: rgba(232,232,240,0.35);
+      text-decoration: none;
+      font-size: 9px;
+    }
+
+    a:hover { color: rgba(232,232,240,0.6); }
+  </style>
+</head>
 <body>
-    <h2>Token Counter</h2>
+  <div class="header">
+    <h1>Token Tracker</h1>
+    <p>Estimates token usage on AI chat sites</p>
+  </div>
 
-    <p>Session: <span id="session"></span></p>
-    <p>Total: <span id="total"></span></p>
+  <div class="section">
+    <div class="section-title">Enabled Sites</div>
 
-    <button id="count">Count Page</button>
-    <button id="export">Export</button>
+    <div class="site-row">
+      <div class="site-row-left">
+        <span class="site-dot" style="background:#10a37f"></span>
+        <span class="site-name">ChatGPT</span>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="toggle-chatgpt" checked />
+        <span class="toggle-track" style="--accent:#10a37f"></span>
+      </label>
+    </div>
 
-    <input type="file" id="import" />
+    <div class="site-row">
+      <div class="site-row-left">
+        <span class="site-dot" style="background:#d97757"></span>
+        <span class="site-name">Claude</span>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="toggle-claude" checked />
+        <span class="toggle-track" style="--accent:#d97757"></span>
+      </label>
+    </div>
 
-    <script src="popup.js"></script>
+    <div class="site-row">
+      <div class="site-row-left">
+        <span class="site-dot" style="background:#4285f4"></span>
+        <span class="site-name">Gemini</span>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="toggle-gemini" checked />
+        <span class="toggle-track" style="--accent:#4285f4"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Notes</div>
+    <p style="font-size:10px; color:rgba(232,232,240,0.4); line-height:1.7">
+      Token counts are estimated using a BPE approximation. Accuracy is ~90–95% vs. actual tokenizers.<br><br>
+      Drag the overlay to reposition it. Settings persist across sessions.
+    </p>
+  </div>
+
+  <div class="footer">
+    <span class="footer-text">v1.0.0 · Manifest V3</span>
+  </div>
+
+  <script src="popup.js"></script>
 </body>
-
 </html>

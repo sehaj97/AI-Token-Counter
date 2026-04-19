@@ -1,41 +1,20 @@
-import { countTokens } from "./tokenizer.js";
-import { getData, addTokens, saveData } from "./storage.js";
+// popup.js — Persists toggle preferences via chrome.storage.sync
 
-async function updateUI() {
-    const data = await getData();
-    document.getElementById("session").innerText = data.sessionTokens;
-    document.getElementById("total").innerText = data.totalTokens;
+const SITES = ["chatgpt", "claude", "gemini"];
+
+// Load saved toggles
+chrome.storage.sync.get(SITES.reduce((acc, s) => ({ ...acc, [`enabled_${s}`]: true }), {}), (prefs) => {
+  for (const site of SITES) {
+    const el = document.getElementById(`toggle-${site}`);
+    if (el) el.checked = prefs[`enabled_${site}`] !== false;
+  }
+});
+
+// Save on change
+for (const site of SITES) {
+  const el = document.getElementById(`toggle-${site}`);
+  if (!el) continue;
+  el.addEventListener("change", () => {
+    chrome.storage.sync.set({ [`enabled_${site}`]: el.checked });
+  });
 }
-
-document.getElementById("count").onclick = async () => {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-
-    chrome.tabs.sendMessage(tab.id, { type: "GET_TEXT" }, async (response) => {
-        const tokens = countTokens(response.text);
-        await addTokens(tokens);
-        updateUI();
-    });
-};
-
-document.getElementById("export").onclick = async () => {
-    const data = await getData();
-
-    const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "token_snapshot.json";
-    a.click();
-};
-
-document.getElementById("import").onchange = async (e) => {
-    const file = e.target.files[0];
-    const text = await file.text();
-    const data = JSON.parse(text);
-
-    await saveData(data);
-    updateUI();
-};
-
-updateUI();
